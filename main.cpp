@@ -87,8 +87,8 @@ int main(int argc, char* argv[])
     char rx_buffer[3];
     while (1)
     {
-        //Dont block context switches, let the process sleep for some time
-        sleep(1);
+        // Dont block context switches, let the process sleep for some time
+        //sleep(1);
         // Implement and call some function that does core work for this daemon.
 
         udp::endpoint remote;
@@ -96,20 +96,21 @@ int main(int argc, char* argv[])
         int recv = socket.receive_from(boost::asio::buffer(rx_buffer, 3),
                 remote, 0, error);
 
-        int r = (int)rx_buffer[0];
-        int g = (int)rx_buffer[1];
-        int b = (int)rx_buffer[2];
+        uint32_t r = (uint32_t)rx_buffer[0];
+        uint32_t g = (uint32_t)rx_buffer[1];
+        uint32_t b = (uint32_t)rx_buffer[2];
 
         fprintf(fp, "Received message from %s. %d bytes: %d %d %d\n",
-                remote.address().to_string(), recv,
-                rx_buffer[0], rx_buffer[1], rx_buffer[2]);
+                remote.address().to_string().c_str(), recv,
+                r, g, b);
         fflush(fp);
 
         for(int i = 0; i<64; i++){
-            strip.channel[0].leds[i] = ((uint32_t)
-                        ((((uint32_t)g) << 8) &
-                        (((uint32_t)r) << 16) &
-                        (((uint32_t)b) << 0)));
+            fprintf(fp, "Color for LED %d = %d\n", i, strip.channel[0].leds[i]);
+            fflush(fp);
+            strip.channel[0].leds[i] = ((r << 8) + (g << 16) + (b));
+            fprintf(fp, "Color for LED %d = %d\n", i, strip.channel[0].leds[i]);
+            fflush(fp);
         }
         ws2811_render(&strip);
     }

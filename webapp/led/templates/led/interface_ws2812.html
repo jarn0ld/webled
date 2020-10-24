@@ -1,0 +1,97 @@
+{% extends "led/base.html" %}
+{% block script-head %}
+<script>
+  $(document).ready(function(){
+  $("form").submit(function(event){
+	  var jqxhr = $.get("/light/api/set_color/r/g/b/", function() {
+	    //alert( "success" );
+	  })
+	  .done(function() {
+	    //alert( "second success" );
+	  })
+	  .fail(function() {
+	    alert( "error" );
+	  })
+	  .always(function() {
+	    //alert( "finished" );
+	  });
+	  return false;
+  });
+  $("#button-off").click(function(){
+	  var jqxhr = $.get("/light/api/off/", function() {
+	    //alert( "success" );
+	  })
+	  .done(function() {
+	    //alert( "second success" );
+	  })
+	  .fail(function() {
+	    alert( "error" );
+	  })
+	  .always(function() {
+	    //alert( "finished" );
+	  });
+  });
+  $(".button-color").click(function(){
+          var css_color = $(this).css('background-color');
+          // rgb(xxx, xxx, xxx)
+          var index_r_start = 4;
+          var index_r_stop = css_color.indexOf(',');
+          var index_g_start = index_r_stop + 2;
+          var index_g_stop = css_color.indexOf(',', index_r_stop + 1);
+          var index_b_start = index_g_stop + 2;
+          var index_b_stop = css_color.indexOf(')', index_g_stop + 1);
+
+          var r = css_color.substring(index_r_start, index_r_stop);
+          var g = css_color.substring(index_g_start, index_g_stop);
+          var b = css_color.substring(index_b_start, index_b_stop);
+
+	  var jqxhr = $.get("/light/api/set_color/"+r+"/"+g+"/"+b+"/", function() {
+	    //alert( "success" );
+	  })
+	  .done(function() {
+	    //alert( "second success" );
+	  })
+	  .fail(function() {
+	    alert( "error" );
+	  })
+	  .always(function() {
+	    //alert( "finished" );
+	  });
+  });
+
+});
+</script>
+{% endblock %}
+{% block content %}
+<div class="row">
+<div class="col-xs-12">
+<div class="well">
+<h1>WS2811</h1>
+</div>
+</div>
+</div>
+<div class="row">
+
+  <div class="col-xs-3"></div>
+  <div class="col-xs-3">
+    <button type="button" class="btn btn-primary btn-lg btn-block button-color" style="background-color: #00ffff; height: 120px;"></button>
+  </div>
+  <div class="col-xs-3">
+    <button type="button" class="btn btn-primary btn-lg btn-block" id="button-off" style="background-color: #c0c0c0;height: 120px;"></button>
+  </div>
+  <div class="col-xs-3"></div>
+
+</div>
+<div class="row">
+
+  <div class="col-xs-3"></div>
+  <div class="col-xs-3">
+    <button type="button" class="btn btn-primary btn-lg btn-block button-color" style="background-color: #ffff00; height: 120px;"></button>
+  </div>
+  <div class="col-xs-3">
+    <button type="button" class="btn btn-primary btn-lg btn-block button-color" style="background-color: #ff00ff;height: 120px;"></button>
+  </div>
+  <div class="col-xs-3"></div>
+
+</div>
+{% endblock %}
